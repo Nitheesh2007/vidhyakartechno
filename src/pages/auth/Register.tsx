@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Sprout, Mail, Lock, User, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { Sprout, Mail, Lock, User, Eye, EyeOff, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 
 export default function Register() {
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const { loginWithDemo } = useAuth();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({
@@ -48,11 +50,24 @@ export default function Register() {
       }
       showToast('Account created successfully! Please login.', 'success');
       navigate('/login');
-    } catch (err) {
-      showToast(err instanceof Error ? err.message : 'Registration failed', 'error');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Registration failed';
+      if (errorMessage.includes('Failed to fetch') || errorMessage.includes('fetch')) {
+        showToast('Supabase offline. Registered in Demo Mode!', 'success');
+        loginWithDemo('farmer', form.fullName, form.email);
+        navigate('/dashboard');
+      } else {
+        showToast(errorMessage, 'error');
+      }
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleQuickDemo = (role: 'farmer' | 'admin') => {
+    loginWithDemo(role);
+    showToast(`Exploring as Demo ${role === 'admin' ? 'Officer' : 'Farmer'}!`, 'success');
+    navigate('/dashboard');
   };
 
   return (
@@ -63,12 +78,37 @@ export default function Register() {
         className="w-full max-w-md"
       >
         <div className="glass-card p-8">
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center mx-auto mb-4">
+          <div className="text-center mb-6">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-primary-500/20">
               <Sprout className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-2xl font-bold text-slate-800 dark:text-white">Create Account</h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">Join the Smart Crop Advisory System</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Join the Smart Crop Advisory System</p>
+          </div>
+
+          {/* Quick Demo Access */}
+          <div className="mb-6 p-3 bg-primary-50 dark:bg-primary-950/40 border border-primary-100 dark:border-primary-800/40 rounded-xl">
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-primary-700 dark:text-primary-300 mb-2">
+              <Sparkles className="w-3.5 h-3.5" /> Instant Demo Access:
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => handleQuickDemo('farmer')}
+                className="py-2 px-3 text-xs font-medium rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:bg-primary-50 hover:text-primary-700 dark:hover:bg-slate-700 transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+              >
+                <Sprout className="w-3.5 h-3.5 text-primary-600" />
+                Demo Farmer
+              </button>
+              <button
+                type="button"
+                onClick={() => handleQuickDemo('admin')}
+                className="py-2 px-3 text-xs font-medium rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:bg-primary-50 hover:text-primary-700 dark:hover:bg-slate-700 transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-indigo-600" />
+                Demo Admin
+              </button>
+            </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">

@@ -14,6 +14,7 @@ import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import { EmptyState, LoadingSpinner } from '../components/ui/Loading';
 import CropImage from '../components/ui/CropImage';
+import { MASTER_CROPS } from '../services/cropRecommendationService';
 
 type RecommendationResult = Crop & { confidence: number };
 
@@ -26,17 +27,49 @@ export default function CropRecommendation() {
   const [farmData, setFarmData] = useState<FarmDetail | null>(null);
   const [results, setResults] = useState<RecommendationResult[]>([]);
   const [search, setSearch] = useState('');
-  const [allCrops, setAllCrops] = useState<Crop[]>([]);
+  const [allCrops, setAllCrops] = useState<Crop[]>(MASTER_CROPS);
 
   useEffect(() => {
     const fetchFarmAndCrops = async () => {
-      if (!session?.user?.id) return;
-      const [farm, crops] = await Promise.all([
-        supabase.from('farm_details').select('*').eq('farmer_id', session.user.id).order('created_at', { ascending: false }).maybeSingle(),
-        supabase.from('crops').select('*'),
-      ]);
-      setFarmData(farm.data as FarmDetail | null);
-      setAllCrops(crops.data || []);
+      let currentFarm: FarmDetail | null = null;
+      const savedFarm = localStorage.getItem('demo_farm_details');
+      if (savedFarm) {
+        try { currentFarm = JSON.parse(savedFarm); } catch {}
+      }
+
+      if (session?.user?.id) {
+        try {
+          const [farmRes, cropsRes] = await Promise.all([
+            supabase.from('farm_details').select('*').eq('farmer_id', session.user.id).order('created_at', { ascending: false }).maybeSingle(),
+            supabase.from('crops').select('*'),
+          ]);
+          if (farmRes.data) currentFarm = farmRes.data as FarmDetail;
+          if (cropsRes.data && cropsRes.data.length > 0) setAllCrops(cropsRes.data);
+          else setAllCrops(MASTER_CROPS);
+        } catch {
+          setAllCrops(MASTER_CROPS);
+        }
+      }
+
+      if (!currentFarm) {
+        currentFarm = {
+          id: 'farm-001',
+          farmer_id: session?.user?.id || 'demo-farmer-001',
+          soil_type: 'Clay',
+          soil_ph: 6.8,
+          nitrogen: 120,
+          phosphorus: 45,
+          potassium: 110,
+          rainfall: 950,
+          temperature: 28,
+          humidity: 75,
+          water_availability: 'High',
+          current_season: 'Monsoon Season',
+          created_at: new Date().toISOString(),
+        };
+      }
+
+      setFarmData(currentFarm);
       setLoading(false);
     };
     fetchFarmAndCrops();
