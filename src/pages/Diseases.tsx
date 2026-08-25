@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Bug, Search, AlertCircle, Shield, FlaskRound, Leaf, Eye,
-  Download, CheckCircle2, CloudSun,
-  AlertTriangle, Filter, Sparkles, X, ChevronRight, Layers, Stethoscope
+  Bug, Search, AlertCircle, Shield, FlaskConical, Leaf, Eye,
+  Download, CheckCircle2, Sun,
+  AlertTriangle, Filter, Sparkles, X, ChevronRight, Layers
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import { MASTER_DISEASES, diagnoseDisease, type DiseaseItem, type DiagnosisMatch } from '../services/diseaseService';
@@ -130,7 +130,7 @@ export default function Diseases() {
             onClick={() => setScannerOpen(!scannerOpen)}
             className="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-500/20"
           >
-            <Stethoscope className="w-4 h-4" />
+            <Sparkles className="w-4 h-4" />
             {scannerOpen ? 'Close Symptom Scanner' : 'AI Symptom Diagnosis Scanner'}
           </Button>
         }
@@ -231,7 +231,7 @@ export default function Diseases() {
                     </Button>
                   )}
                   <Button type="submit" className="btn-primary flex items-center gap-2">
-                    <Stethoscope className="w-4 h-4" />
+                    <Sparkles className="w-4 h-4" />
                     Run AI Diagnosis
                   </Button>
                 </div>
@@ -476,7 +476,7 @@ export default function Diseases() {
             <div className="flex border-b border-slate-200 dark:border-slate-700 px-6 bg-slate-50/60 dark:bg-slate-800/40">
               {[
                 { key: 'overview', label: 'Symptoms & Causes', icon: AlertCircle },
-                { key: 'treatment', label: 'Chemical Treatment', icon: FlaskRound },
+                { key: 'treatment', label: 'Chemical Treatment', icon: FlaskConical },
                 { key: 'organic', label: 'Organic & Bio Solution', icon: Leaf },
                 { key: 'prevention', label: 'Prevention & Calendar', icon: Shield },
               ].map((tab) => (
@@ -513,7 +513,7 @@ export default function Diseases() {
 
                   <div className="p-4 rounded-2xl bg-amber-50/60 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/30">
                     <h4 className="text-sm font-bold text-amber-800 dark:text-amber-300 flex items-center gap-2 mb-1.5">
-                      <CloudSun className="w-4 h-4" /> Weather & Environmental Outbreak Triggers
+                      <Sun className="w-4 h-4" /> Weather & Environmental Outbreak Triggers
                     </h4>
                     <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">{selected.weather_triggers}</p>
                   </div>
@@ -535,7 +535,7 @@ export default function Diseases() {
                 <div className="space-y-4">
                   <div className="p-4 rounded-2xl bg-purple-50/60 dark:bg-purple-950/20 border border-purple-100 dark:border-purple-900/30">
                     <h4 className="text-sm font-bold text-purple-700 dark:text-purple-300 flex items-center gap-2 mb-2">
-                      <FlaskRound className="w-4 h-4" /> Recommended Chemical Prescription
+                      <FlaskConical className="w-4 h-4" /> Recommended Chemical Prescription
                     </h4>
                     <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed mb-3">{selected.treatment}</p>
                     <div className="p-3 rounded-xl bg-white dark:bg-slate-800 border border-purple-200 dark:border-purple-800/40">
