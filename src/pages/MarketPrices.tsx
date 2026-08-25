@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import {
   TrendingUp, TrendingDown, Search, ArrowUpDown, MapPin,
-  Calculator, DollarSign, Award, ChevronRight, Filter, Download
+  Calculator, DollarSign
 } from 'lucide-react';
 import { MASTER_MARKET_PRICES, calculateHarvestProfit, type MarketPriceItem } from '../services/marketService';
 import PageHeader from '../components/ui/PageHeader';
@@ -26,7 +26,7 @@ export default function MarketPrices() {
   // Profit Calculator State
   const [calcOpen, setCalcOpen] = useState(false);
   const [calcCrop, setCalcCrop] = useState<string>('Paddy (Rice) Grade A');
-  const [calcQuintals, setCalcQuintals] = useState<number>(50); // e.g. 50 quintals (~5 tonnes)
+  const [calcQuintals, setCalcQuintals] = useState<number>(50);
   const [calcCustomPrice, setCalcCustomPrice] = useState<number>(2320);
 
   const categories = ['All', 'Cereals', 'Cash Crops', 'Vegetables', 'Fruits', 'Spices', 'Oilseeds'];
@@ -54,7 +54,6 @@ export default function MarketPrices() {
     return result;
   }, [prices, search, categoryFilter, marketFilter, sortKey, sortOrder]);
 
-  // Find best market price for selected crop in calculator
   const selectedPriceItem = prices.find((p) => p.crop_name === calcCrop) || prices[0];
   const profitReport = calculateHarvestProfit({
     quintals: calcQuintals,

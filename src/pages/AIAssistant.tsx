@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, Send, User, Sparkles, Trash2, Bug, FlaskConical, TrendingUp, Award, Globe, Mic, Volume2 } from 'lucide-react';
+import { Bot, Send, User, Sparkles, Trash2, Bug, FlaskConical, TrendingUp, Award, Globe } from 'lucide-react';
 import PageHeader from '../components/ui/PageHeader';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';

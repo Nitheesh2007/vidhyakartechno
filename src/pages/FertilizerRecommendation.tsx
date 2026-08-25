@@ -1,22 +1,17 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-  FlaskConical, Search, Calculator, Beaker, Info, Leaf, CheckCircle2,
-  Calendar, ArrowRight, ShieldCheck, Sparkles, DollarSign, Layers
+  FlaskConical, Search, Calculator, Beaker, Leaf, Calendar, ArrowRight
 } from 'lucide-react';
 import { MASTER_FERTILIZERS, calculateFertilizerDose, type FertilizerItem } from '../services/fertilizerService';
 import { useAuth } from '../context/AuthContext';
-import { useToast } from '../context/ToastContext';
 import PageHeader from '../components/ui/PageHeader';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
-import { Input, Select } from '../components/ui/Input';
+import { Input } from '../components/ui/Input';
 
 export default function FertilizerRecommendation() {
   const { profile } = useAuth();
-  const { showToast } = useToast();
-  const navigate = useNavigate();
   const [fertilizers] = useState<FertilizerItem[]>(MASTER_FERTILIZERS);
   const [search, setSearch] = useState('');
   const [selectedType, setSelectedType] = useState<string>('All');
